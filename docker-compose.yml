@@ -10,21 +10,22 @@ services:
     ports:
       - "5432:5432"
 
-  # server:
-  #   image: node:16.14.0-alpine3.14
-  #   command:
-  #     [
-  #       "yarn",
-  #       "start"
-  #     ]
-  #   working_dir: /app
-  #   # env_file:
-  #   #   - config/docker/env/common.env
-  #   volumes:
-  #     - .:/app
-  #   ports:
-  #     - "3000:3000"
-  #   restart: unless-stopped
+  server:
+    image: node:16.14.0-alpine3.14
+    command:
+      [
+        "yarn",
+        "start"
+      ]
+    working_dir: /app
+    environment:
+      - DATABASE_URL=postgresql://admin:admin@postgres:5432/postgres?schema=shipments
+      - PORT=3000
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
 
 volumes:
   postgres:

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon src/index.ts",
+    "start": "yarn prisma:push && nodemon src/index.ts",
     "lint": "eslint src",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",

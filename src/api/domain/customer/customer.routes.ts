@@ -8,7 +8,7 @@ const CustomerRouter = Router();
 CustomerRouter.get('/:id', validate(customerValidator.ValidateGet), async (req, res, next) => {
   try {
     const customer = await customerService.get(req.params['id']);
-    if (!customer) res.sendStatus(404);
+    if (!customer) return res.sendStatus(404);
     res.send(customer);
   } catch (err) {
     next(err);
