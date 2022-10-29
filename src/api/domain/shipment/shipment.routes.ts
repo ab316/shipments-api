@@ -1,7 +1,7 @@
 import {Router} from 'express';
-import quotationService from '../../services/quotation.service';
-import validate from '../middleware/validation.middleware';
-import ShipmentValidator from '../validators/shipment.validator';
+import quotationService from '../../../services/quotation.service';
+import validate from '../../middleware/validation.middleware';
+import ShipmentValidator from './shipment.validator';
 
 const ShipmentRouter = Router();
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import CustomerRouter from '../api/routes/customer.routes';
-import ShipmentRouter from '../api/routes/shipment.routes';
+import CustomerRouter from '../api/domain/customer/customer.routes';
+import ShipmentRouter from '../api/domain/shipment/shipment.routes';
 
 export default function loadAPI(app: express.Application) {
   app.use(bodyParser.json());

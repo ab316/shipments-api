@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import customerService from '../../services/customer.service';
+import customerService from '../../../services/customer.service';
 
 const CustomerRouter = Router();
 
