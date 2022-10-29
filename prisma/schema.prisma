@@ -13,6 +13,7 @@ model Customer {
   email     String     @unique @db.VarChar(250)
   createdAt DateTime   @default(now()) @db.Timetz
   updatedAt DateTime   @default(now()) @db.Timetz
+  
   Shipments Shipment[]
 }
 
@@ -56,11 +57,12 @@ model RegionPricing {
   id              String   @id @default(uuid()) @db.Uuid
   fromRegion      String
   toRegion        String
-  FromRegion      Region   @relation("fromRegion", fields: [fromRegion], references: [name])
-  ToRegion        Region   @relation("toRegion", fields: [toRegion], references: [name])
   priceMultiplier Float    @db.DoublePrecision
   createdAt       DateTime @default(now()) @db.Timetz
   updatedAt       DateTime @default(now()) @db.Timetz
+
+  FromRegion Region @relation("fromRegion", fields: [fromRegion], references: [name])
+  ToRegion   Region @relation("toRegion", fields: [toRegion], references: [name])
 
   @@unique([fromRegion, toRegion])
 }
