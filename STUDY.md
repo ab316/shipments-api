@@ -12,6 +12,10 @@
   1. Multipliers
 
 
+# Assumptions
+1. All prices are in SEK
+
+
 # Tasks
 1. Store and retrieve shipments
 1. Calculate price for a given shipment
