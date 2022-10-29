@@ -1,0 +1,66 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String     @id @default(uuid()) @db.Uuid
+  email     String     @unique @db.VarChar(250)
+  createdAt DateTime   @default(now()) @db.Timetz
+  updatedAt DateTime   @default(now()) @db.Timetz
+  Shipments Shipment[]
+}
+
+model Shipment {
+  id         String   @id @default(uuid()) @db.Uuid
+  customerId String   @db.Uuid
+  Customer   Customer @relation(fields: [customerId], references: [id])
+  price      Int
+  createdAt  DateTime @default(now()) @db.Timetz
+  updatedAt  DateTime @default(now()) @db.Timetz
+}
+
+model Region {
+  id           String          @id @default(uuid()) @db.Uuid
+  name         String          @unique
+  countries    Country[]
+  FromPricings RegionPricing[] @relation("fromRegion")
+  ToPricings   RegionPricing[] @relation("toRegion")
+  createdAt    DateTime        @default(now()) @db.Timetz
+  updatedAt    DateTime        @default(now()) @db.Timetz
+}
+
+model Country {
+  isoCode   String   @unique @db.Char(2)
+  regionId  String   @db.Uuid
+  Region    Region   @relation(fields: [regionId], references: [id])
+  createdAt DateTime @default(now()) @db.Timetz
+  updatedAt DateTime @default(now()) @db.Timetz
+}
+
+model RegionPricing {
+  id              String   @id @default(uuid()) @db.Uuid
+  fromRegionId    String   @db.Uuid
+  toRegionId      String   @db.Uuid
+  FromRegion      Region   @relation("fromRegion", fields: [fromRegionId], references: [id])
+  ToRegion        Region   @relation("toRegion", fields: [toRegionId], references: [id])
+  priceMultiplier Float    @db.DoublePrecision
+  createdAt       DateTime @default(now()) @db.Timetz
+  updatedAt       DateTime @default(now()) @db.Timetz
+
+  @@unique([fromRegionId, toRegionId])
+}
+
+model WeightClass {
+  id        String   @id @default(uuid()) @db.Uuid
+  lower     Int
+  upper     Int
+  price     Int
+  createdAt DateTime @default(now()) @db.Timetz
+  updatedAt DateTime @default(now()) @db.Timetz
+}
