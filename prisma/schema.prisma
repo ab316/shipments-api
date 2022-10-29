@@ -20,18 +20,28 @@ model Shipment {
   id         String   @id @default(uuid()) @db.Uuid
   customerId String   @db.Uuid
   Customer   Customer @relation(fields: [customerId], references: [id])
+  fromRegion String
+  toRegion   String
+  weight     String
   price      Int
   createdAt  DateTime @default(now()) @db.Timetz
   updatedAt  DateTime @default(now()) @db.Timetz
+
+  FromRegion  Region      @relation("fromRegion", fields: [fromRegion], references: [name])
+  ToRegion    Region      @relation("toRegion", fields: [toRegion], references: [name])
+  WeightClass WeightClass @relation(fields: [weight], references: [name])
 }
 
 model Region {
-  name         String          @id @unique
-  countries    Country[]
-  FromPricings RegionPricing[] @relation("fromRegion")
-  ToPricings   RegionPricing[] @relation("toRegion")
-  createdAt    DateTime        @default(now()) @db.Timetz
-  updatedAt    DateTime        @default(now()) @db.Timetz
+  name      String    @id @unique
+  countries Country[]
+  createdAt DateTime  @default(now()) @db.Timetz
+  updatedAt DateTime  @default(now()) @db.Timetz
+
+  FromPricings  RegionPricing[] @relation("fromRegion")
+  ToPricings    RegionPricing[] @relation("toRegion")
+  FromShipments Shipment[]      @relation("fromRegion")
+  ToShipments   Shipment[]      @relation("toRegion")
 }
 
 model Country {
@@ -56,12 +66,13 @@ model RegionPricing {
 }
 
 model WeightClass {
-  id             String   @id @default(uuid()) @db.Uuid
-  name           String   @unique
+  name           String   @id @unique
   price          Int
   lower          Int
   upper          Int
   upperInclusive Boolean  @default(false)
   createdAt      DateTime @default(now()) @db.Timetz
   updatedAt      DateTime @default(now()) @db.Timetz
+
+  Shipments Shipment[]
 }
