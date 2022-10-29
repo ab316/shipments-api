@@ -1,5 +1,5 @@
 # Introduction
-See [study](./STUDY.md)
+See [study](./STUDY.md) and [deployment](./DEPLOYMENT.md)
 
 # Usage
 ## Local Docker Setup
