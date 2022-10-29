@@ -25,9 +25,19 @@ ShipmentRouter.post('/create', validate(shipmentValidator.ValidateCreate), async
   }
 });
 
-ShipmentRouter.get('/customer/:id', validate(shipmentValidator.ValidateGetShipments), async (req, res, next) => {
-  console.log('query', req.query);
-  res.sendStatus(200);
-});
+ShipmentRouter.get(
+  '/customer/:id',
+  validate(shipmentValidator.ValidateGetShipments),
+  async (req: Request, res, next) => {
+    try {
+      const limit = Number.parseInt(req.query['limit'] as string);
+      const offset = Number.parseInt(req.query['offset'] as string);
+      const customerId = req.params['id'];
+      res.send(await shipmentService.get(customerId, limit, offset));
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 export default ShipmentRouter;
