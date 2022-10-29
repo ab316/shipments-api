@@ -20,17 +20,25 @@ model Customer {
 model Shipment {
   id          String   @id @default(uuid()) @db.Uuid
   customerId  String   @db.Uuid
-  Customer    Customer @relation(fields: [customerId], references: [id])
+  fromCountry String   @db.Char(2)
+  toCountry   String   @db.Char(2)
   fromRegion  String
   toRegion    String
-  weight      String
+  weight      Float
   weightClass String
   price       Int
   createdAt   DateTime @default(now()) @db.Timetz
   updatedAt   DateTime @default(now()) @db.Timetz
 
+  Customer    Customer    @relation(fields: [customerId], references: [id])
+
+  // We store the region as it might change for a country e.g. UK left EU with Brexit
   FromRegion  Region      @relation("fromRegion", fields: [fromRegion], references: [name])
   ToRegion    Region      @relation("toRegion", fields: [toRegion], references: [name])
+  FromCountry Country     @relation("fromCountry", fields: [fromCountry], references: [isoCode])
+  ToCountry   Country     @relation("toCountry", fields: [toCountry], references: [isoCode])
+
+  // Weight class is stored for the same reason. We can go one step further and store both weight price and region multiplier if needed
   WeightClass WeightClass @relation(fields: [weightClass], references: [name])
 }
 
@@ -52,6 +60,9 @@ model Country {
   Region    Region   @relation(fields: [region], references: [name])
   createdAt DateTime @default(now()) @db.Timetz
   updatedAt DateTime @default(now()) @db.Timetz
+
+  FromShipments Shipment[] @relation("fromCountry")
+  ToShipments   Shipment[] @relation("toCountry")
 }
 
 model RegionPricing {

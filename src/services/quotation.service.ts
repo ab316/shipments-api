@@ -1,4 +1,5 @@
-import {CountryCode, Price, WeightKg} from '../@types/shipment.types';
+import {WeightClass} from '@prisma/client';
+import {CountryCode, WeightKg} from '../@types/shipment.types';
 import database from '../loaders/database';
 
 interface IGetQuoteRequest {
@@ -8,6 +9,7 @@ interface IGetQuoteRequest {
 }
 
 interface IGetQuoteReponse {
+  weightClass: string;
   weightPrice: number;
   routeMuliplier: number;
   totalPrice: number;
@@ -18,12 +20,13 @@ class QuotationService {
   private readonly DOMESTIC_MULTIPLIER = 1;
 
   public async getPriceQuote(data: IGetQuoteRequest): Promise<IGetQuoteReponse> {
-    const weightPrice = await this.getWeightPrice(data.weight);
+    const weightClass = await this.getWeightClass(data.weight);
     const routeMuliplier = await this.getRouteMultiplier(data.from, data.to);
-    const totalPrice = weightPrice * routeMuliplier;
+    const totalPrice = weightClass.price * routeMuliplier;
 
     const response: IGetQuoteReponse = {
-      weightPrice,
+      weightClass: weightClass.name,
+      weightPrice: weightClass.price,
       routeMuliplier,
       totalPrice,
     };
@@ -31,7 +34,7 @@ class QuotationService {
     return response;
   }
 
-  private async getWeightPrice(weight: WeightKg): Promise<Price> {
+  private async getWeightClass(weight: WeightKg): Promise<WeightClass> {
     const weightClass = await database.weightClass.findFirstOrThrow({
       where: {
         AND: [
@@ -45,7 +48,7 @@ class QuotationService {
         ],
       },
     });
-    return weightClass.price;
+    return weightClass;
   }
 
   private async getRouteMultiplier(from: CountryCode, to: CountryCode): Promise<number> {
