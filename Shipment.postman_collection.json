@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "2fee6a74-bde3-49c2-a772-bb1b0b6113d1",
+		"name": "Sendify",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23129332"
+	},
+	"item": [
+		{
+			"name": "1. Create Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"customer1@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/customer/create",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get Customer",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/customer/5e80dede-b1e0-4876-8b9b-89323d3cd84f",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"customer",
+						"5e80dede-b1e0-4876-8b9b-89323d3cd84f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Quote",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from\": \"US\",\r\n    \"to\": \"SE\",\r\n    \"weight\": \"500\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/shipment/quote",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shipment",
+						"quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Create Shipment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customerId\": \"5e80dede-b1e0-4876-8b9b-89323d3cd84f\",\r\n    \"from\": \"SE\",\r\n    \"to\": \"GB\",\r\n    \"weight\": \"500\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/shipment/create",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shipment",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Get Shipments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/shipment/customer/5e80dede-b1e0-4876-8b9b-89323d3cd84f?limit=10&offset=0",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"shipment",
+						"customer",
+						"5e80dede-b1e0-4876-8b9b-89323d3cd84f"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
