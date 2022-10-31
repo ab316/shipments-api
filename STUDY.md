@@ -27,8 +27,12 @@
 1. Calculate pricing
 1. API to manage country and pricing meta-data
 
+
 # Assumptions
 1. All prices are in SEK
+
+# Schema
+![Schema](schema.png "DB Schema")
 
 # Stack
 1. NodeJs with TypeScript
