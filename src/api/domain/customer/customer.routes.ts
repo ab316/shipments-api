@@ -1,9 +1,12 @@
 import {Router} from 'express';
-import customerService from '../../../services/customer.service';
+import container from '../../../loaders/container';
+import {ICustomerService} from '../../../services/interfaces/ICustomerService';
+import {TYPES} from '../../../types/inversify.types';
 import validate from '../../middleware/validation.middleware';
 import customerValidator from './customer.validator';
 
 const CustomerRouter = Router();
+const customerService = container.get<ICustomerService>(TYPES.CustomerService);
 
 CustomerRouter.get('/:id', validate(customerValidator.ValidateGet), async (req, res, next) => {
   try {

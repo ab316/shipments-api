@@ -1,10 +1,14 @@
 import {Request, Router} from 'express';
-import quotationService from '../../../services/quotation.service';
-import shipmentService from '../../../services/shipment.service';
+import container from '../../../loaders/container';
+import {IQuotationService} from '../../../services/interfaces/IQuotationService';
+import {IShipmentService} from '../../../services/interfaces/IShipmentService';
+import {TYPES} from '../../../types/inversify.types';
 import validate from '../../middleware/validation.middleware';
 import shipmentValidator from './shipment.validator';
 
 const ShipmentRouter = Router();
+const quotationService = container.get<IQuotationService>(TYPES.QuotationService);
+const shipmentService = container.get<IShipmentService>(TYPES.ShipmentService);
 
 ShipmentRouter.post('/quote', validate(shipmentValidator.ValidateGetQuote), async (req, res, next) => {
   try {

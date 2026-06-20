@@ -1,30 +1,22 @@
+import {inject, injectable} from 'inversify';
 import {WeightClass} from '@prisma/client';
 import {CountryCode, WeightKg} from '../@types/shipment.types';
-import database from '../loaders/database';
+import {IDatabase} from './interfaces/IDatabase';
+import {IQuotationService, IGetQuoteRequest, IGetQuoteResponse} from './interfaces/IQuotationService';
+import {TYPES} from '../types/inversify.types';
 
-interface IGetQuoteRequest {
-  from: CountryCode;
-  to: CountryCode;
-  weight: WeightKg;
-}
-
-interface IGetQuoteReponse {
-  weightClass: string;
-  weightPrice: number;
-  routeMuliplier: number;
-  totalPrice: number;
-}
-
-class QuotationService {
-  // This might be configurable in the future so it will have to go in the database
+@injectable()
+export class QuotationService implements IQuotationService {
   private readonly DOMESTIC_MULTIPLIER = 1;
 
-  public async getPriceQuote(data: IGetQuoteRequest): Promise<IGetQuoteReponse> {
+  constructor(@inject(TYPES.Database) private database: IDatabase) {}
+
+  public async getPriceQuote(data: IGetQuoteRequest): Promise<IGetQuoteResponse> {
     const weightClass = await this.getWeightClass(data.weight);
     const routeMuliplier = await this.getRouteMultiplier(data.from, data.to);
     const totalPrice = weightClass.price * routeMuliplier;
 
-    const response: IGetQuoteReponse = {
+    const response: IGetQuoteResponse = {
       weightClass: weightClass.name,
       weightPrice: weightClass.price,
       routeMuliplier,
@@ -35,7 +27,7 @@ class QuotationService {
   }
 
   private async getWeightClass(weight: WeightKg): Promise<WeightClass> {
-    const weightClass = await database.weightClass.findFirstOrThrow({
+    const weightClass = await this.database.weightClass.findFirstOrThrow({
       where: {
         AND: [
           {lower: {lte: weight}},
@@ -52,22 +44,20 @@ class QuotationService {
   }
 
   private async getRouteMultiplier(from: CountryCode, to: CountryCode): Promise<number> {
-    const fromCountry = await database.country.findFirstOrThrow({
+    const fromCountry = await this.database.country.findFirstOrThrow({
       where: {isoCode: from},
     });
 
-    const toCountry = await database.country.findFirstOrThrow({
+    const toCountry = await this.database.country.findFirstOrThrow({
       where: {isoCode: to},
     });
 
     if (toCountry.region === fromCountry.region) return this.DOMESTIC_MULTIPLIER;
 
-    const regionPricing = await database.regionPricing.findFirstOrThrow({
+    const regionPricing = await this.database.regionPricing.findFirstOrThrow({
       where: {fromRegion: fromCountry.region, toRegion: toCountry.region},
     });
 
     return regionPricing.priceMultiplier;
   }
 }
-
-export default new QuotationService();

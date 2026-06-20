@@ -1,19 +1,19 @@
+import {inject, injectable} from 'inversify';
 import {Shipment} from '@prisma/client';
-import {CountryCode, WeightKg} from '../@types/shipment.types';
-import database from '../loaders/database';
-import quotationService from './quotation.service';
+import {IDatabase} from './interfaces/IDatabase';
+import {IShipmentService, ICreateShipment} from './interfaces/IShipmentService';
+import {IQuotationService} from './interfaces/IQuotationService';
+import {TYPES} from '../types/inversify.types';
 
-interface ICreateShipment {
-  customerId: string;
-  from: CountryCode;
-  to: CountryCode;
-  weight: WeightKg;
-}
+@injectable()
+export class ShipmentService implements IShipmentService {
+  constructor(
+    @inject(TYPES.Database) private database: IDatabase,
+    @inject(TYPES.QuotationService) private quotationService: IQuotationService,
+  ) {}
 
-class ShipmentService {
-  // Better to use cursor-based pagination for maximum scalability
   public async get(customerId: string, limit: number, offset: number): Promise<Array<Shipment>> {
-    return database.shipment.findMany({
+    return this.database.shipment.findMany({
       where: {customerId},
       take: limit,
       skip: offset,
@@ -21,18 +21,18 @@ class ShipmentService {
     });
   }
 
-  public async create(data: ICreateShipment) {
-    const fromCountry = await database.country.findFirstOrThrow({where: {isoCode: data.from}});
+  public async create(data: ICreateShipment): Promise<Shipment> {
+    const fromCountry = await this.database.country.findFirstOrThrow({where: {isoCode: data.from}});
 
-    const toCountry = await database.country.findFirstOrThrow({where: {isoCode: data.to}});
+    const toCountry = await this.database.country.findFirstOrThrow({where: {isoCode: data.to}});
 
-    const quote = await quotationService.getPriceQuote({
+    const quote = await this.quotationService.getPriceQuote({
       from: data.from,
       to: data.to,
       weight: data.weight,
     });
 
-    const shipment = await database.shipment.create({
+    const shipment = await this.database.shipment.create({
       data: {
         customerId: data.customerId,
         weight: data.weight,
@@ -48,5 +48,3 @@ class ShipmentService {
     return shipment;
   }
 }
-
-export default new ShipmentService();

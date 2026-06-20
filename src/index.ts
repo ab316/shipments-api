@@ -1,6 +1,7 @@
+import 'reflect-metadata';
 import express from 'express';
 import 'dotenv/config';
-import './loaders/database';
+import './loaders/container';
 import loadAPI from './loaders/api';
 
 const DEFAULT_PORT = 3000;

@@ -1,5 +1,6 @@
 import {PrismaClient} from '@prisma/client';
+import {IDatabase} from '../services/interfaces/IDatabase';
 
-const database = new PrismaClient();
-
-export default database;
+export const createDatabase = (): IDatabase => {
+  return new PrismaClient() as IDatabase;
+};

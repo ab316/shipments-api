@@ -1,13 +1,15 @@
+import {inject, injectable} from 'inversify';
 import {Customer, Prisma} from '@prisma/client';
-import database from '../loaders/database';
+import {IDatabase} from './interfaces/IDatabase';
+import {ICustomerService, ICreateCustomer} from './interfaces/ICustomerService';
+import {TYPES} from '../types/inversify.types';
 
-interface ICreateCustomer {
-  email: string;
-}
+@injectable()
+export class CustomerService implements ICustomerService {
+  constructor(@inject(TYPES.Database) private database: IDatabase) {}
 
-class CustomerService {
   async get(id: string): Promise<Customer | null> {
-    return database.customer.findUnique({
+    return this.database.customer.findUnique({
       where: {id},
     });
   }
@@ -17,7 +19,7 @@ class CustomerService {
     if (!email) throw new Error('Invalid email provided');
 
     try {
-      const customer = await database.customer.create({
+      const customer = await this.database.customer.create({
         data: {
           email: email,
         },
@@ -31,5 +33,3 @@ class CustomerService {
     }
   }
 }
-
-export default new CustomerService();
