@@ -1,6 +1,8 @@
 # Introduction
 See [study](./STUDY.md) and [deployment](./DEPLOYMENT.md)
 
+This project is licensed under the [MIT License](./LICENSE).
+
 # Usage
 ## Local Docker Setup
 ### Requirements
