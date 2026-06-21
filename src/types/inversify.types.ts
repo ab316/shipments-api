@@ -3,4 +3,5 @@ export const TYPES = {
   CustomerService: Symbol.for('CustomerService'),
   QuotationService: Symbol.for('QuotationService'),
   ShipmentService: Symbol.for('ShipmentService'),
+  AdminService: Symbol.for('AdminService'),
 };

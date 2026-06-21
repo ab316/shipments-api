@@ -2,12 +2,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import CustomerRouter from '../api/domain/customer/customer.routes';
 import ShipmentRouter from '../api/domain/shipment/shipment.routes';
+import AdminRouter from '../api/domain/admin/admin.routes';
 
 export default function loadAPI(app: express.Application) {
   app.use(bodyParser.json());
 
   app.use('/customer', CustomerRouter);
   app.use('/shipment', ShipmentRouter);
+  app.use('/admin', AdminRouter);
 
   app.use(errorHandler);
 }

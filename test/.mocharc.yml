@@ -1,0 +1,4 @@
+require:
+  - ts-node/register
+spec: "da_training_project_tests/**/*.test.ts"
+timeout: 10000
